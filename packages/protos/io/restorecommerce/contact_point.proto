@@ -46,4 +46,8 @@ message ContactPoint {
   string telephone = 8;
   string timezone_id = 9;
   string locale_id = 10;
+  string title = 11;
+  string name1 = 12;
+  string name2 = 13;
+  string name3 = 14;
 }

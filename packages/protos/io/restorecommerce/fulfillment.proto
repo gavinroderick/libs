@@ -86,14 +86,16 @@ message Packstation {
 
 message Address {
   string title = 1;
-  repeated string name = 2;
+  string name1 = 2;
+  string name1 = 3;
+  string name1 = 4;
   oneof type {
-    io.restorecommerce.address.Address address = 3;
-    Packstation packstation = 4;
-    Branch branch = 5;
+    io.restorecommerce.address.Address address = 5;
+    Packstation packstation = 6;
+    Branch branch = 7;
   };
-  io.restorecommerce.counrty country = 6;
-  Contact contact = 7;
+  io.restorecommerce.counrty country = 8;
+  Contact contact = 9;
 }
 
 message Parcel {
