@@ -13,7 +13,7 @@ service Service {
   rpc Delete (io.restorecommerce.resourcebase.DeleteRequest) returns (io.restorecommerce.resourcebase.DeleteResponse);
   rpc Update (OrderList) returns (OrderListResponse);
   rpc Upsert (OrderList) returns (OrderListResponse);
-  rpc TriggerFulfillment (OrderDataList) returns (FulfillmentResults);
+  rpc TriggerFulfillment (OrderDataList) returns (io.restorecommerce.fulfillment.FulfillmentResponseList);
 }
 
 
@@ -34,6 +34,22 @@ message OrderResponse {
   io.restorecommerce.status.Status status = 2;
 }
 
+/**
+* Fulfillment Items list
+*/
+message FulfilledItems {
+  string item_id = 1;
+  unit32 quantity = 2;
+}
+
+/**
+* To be updated on Order once the TriggerFulfillment is called
+*/
+message Fulfillments {
+  string id = 1;
+  repeated FulfilledItems items = 2;
+}
+
 message Order {
   string id = 1;
   io.restorecommerce.meta.Meta meta = 2;
@@ -47,6 +63,8 @@ message Order {
   string shipping_contact_point_id = 8;
   string billing_contact_point_id = 9;
   double total_weight_in_kg = 10;
+  string fulfillment_product_id = 11; // will be selected on order checkout
+  repeated Fulfillments fulfillments = 12; // will be updated after triggering fulfillment
 }
 
 message Items {
@@ -86,36 +104,10 @@ message OrderDataList {
 
 message OrderData {
   string order_id = 1;
-  repeated Shipments shipments = 2;
+  repeated ItemQuantity items = 2;
 }
 
-message Shipments {
-  double total_weight_in_kg = 1;
-  // below properties are used for international packaging
-  double individual_weight_in_kg = 2; // each items weight
-  int32 amount = 3; // number of items
-  string export_type = 4;
-  string export_description = 5;
-  string customs_tariff_number = 6;
-  string invoice_number = 7;
-  double customs_value = 8;
-}
-
-message FulfillmentResults {
-  repeated ResponseDetailsList fulfillmentResults =1;
-}
-
-message ResponseDetailsList {
-  OrderStatus Status = 1;
-  ErrorList error = 2;
-}
-
-message OrderStatus {
-  string OrderId = 1;
-  string OrderStatus =2;
-}
-
-message ErrorList {
-  repeated string code = 1;
-  repeated string message = 2;
+message ItemQuantity {
+  string item_id = 1;
+  int32 quantity = 2;
 }
