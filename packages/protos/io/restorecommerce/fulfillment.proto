@@ -87,8 +87,8 @@ message Packstation {
 message Address {
   string title = 1;
   string name1 = 2;
-  string name1 = 3;
-  string name1 = 4;
+  string name2 = 3;
+  string name3 = 4;
   oneof type {
     io.restorecommerce.address.Address address = 5;
     Packstation packstation = 6;
