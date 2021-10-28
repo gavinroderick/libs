@@ -99,7 +99,7 @@ message Deleted {
 
 message OrderDataList {
   repeated OrderData order_data = 1;
-  io.restorecommerce.meta.Meta meta = 2;
+  io.restorecommerce.auth.Subject subject = 3;
 }
 
 message OrderData {
