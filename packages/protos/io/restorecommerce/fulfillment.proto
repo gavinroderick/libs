@@ -94,7 +94,7 @@ message Address {
     Packstation packstation = 6;
     Branch branch = 7;
   };
-  io.restorecommerce.counrty country = 8;
+  io.restorecommerce.country.Country country = 8;
   Contact contact = 9;
 }
 
