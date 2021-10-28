@@ -13,7 +13,7 @@ service Service {
   rpc Delete (io.restorecommerce.resourcebase.DeleteRequest) returns (io.restorecommerce.resourcebase.DeleteResponse);
   rpc Update (OrderList) returns (OrderListResponse);
   rpc Upsert (OrderList) returns (OrderListResponse);
-  rpc TriggerFulfillment (OrderDataList) returns (io.restorecommerce.fulfillment.FulfillmentResponseList);
+  rpc TriggerFulfillment (OrderDataList) returns (TriggerFulfillmentResponse);
 }
 
 
@@ -110,4 +110,9 @@ message OrderData {
 message ItemQuantity {
   string item_id = 1;
   int32 quantity = 2;
+}
+
+message TriggerFulfillmentResponse {
+  repeated io.restorecommerce.status.Status status = 1;
+  io.restorecommerce.status.OperationStatus operation_status = 2;
 }
