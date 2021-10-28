@@ -39,7 +39,7 @@ message OrderResponse {
 */
 message FulfilledItems {
   string item_id = 1;
-  unit32 quantity = 2;
+  uint32 quantity = 2;
 }
 
 /**
