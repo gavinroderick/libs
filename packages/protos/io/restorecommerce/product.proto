@@ -64,18 +64,26 @@ message ProductResponse {
   io.restorecommerce.status.Status status = 3;
 }
 
+message Price {
+  enum Currency {
+    EUR = 1;
+    DOLLAR = 2;
+  }
+  double price = 1;
+}
+
 message Variant {
   string id = 1;
   string name = 2;
   string description = 3;
   int32 stock_level = 4;
-  double price = 5;
+  Price price = 5;
   bool sale = 6;
-  double sale_price = 7;
+  Price sale_price = 7;
   repeated io.restorecommerce.image.Image image = 8;
   string stock_keeping_unit = 9;
   string template_variant = 10;
-  repeated io.restorecommerce.attribute.Attribute attribute = 11;
+  repeated io.restorecommerce.types.FloatWithUnit type = 11;
 }
 
 message Bundle {
@@ -84,7 +92,7 @@ message Bundle {
   string description = 4;
   repeated io.restorecommerce.image.Image image = 5;
   repeated BundleProduct product = 6;
-  double price = 7;
+  Price price = 7;
 }
 
 message BundleProduct {

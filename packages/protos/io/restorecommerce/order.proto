@@ -6,6 +6,7 @@ import "io/restorecommerce/resource_base.proto";
 import "io/restorecommerce/meta.proto";
 import "io/restorecommerce/auth.proto";
 import "io/restorecommerce/status.proto";
+import "io/restorecommerce/types.proto";
 
 service Service {
   rpc Read (io.restorecommerce.resourcebase.ReadRequest) returns (OrderListResponse);
@@ -68,7 +69,7 @@ message Order {
 }
 
 message Items {
-  double quantity_price = 1;
+  double quantity_price = 1;  //  (quantity * price) +  ( vat * (quantity * price) )
   Item item = 2;
 }
 
@@ -82,15 +83,15 @@ message Item {
   string prototype_name = 6;
   string prototype_description = 7;
   int32 quantity = 8;
-  int32 vat = 9;
-  double price = 10;
+  int32 vat_amount = 9;
+  io.restorecommerce.product.Price price = 10;
   string item_type = 11;
   double taric_code = 12;
   string stock_keeping_unit = 13;
-  double weight_in_kg = 14;
-  int32 length_in_cm = 15;
-  int32 width_in_cm = 16;
-  int32 height_in_cm = 17;
+  io.restorecommerce.types.FloatWithUnit weight = 14;
+  io.restorecommerce.types.FloatWithUnit length = 15;
+  io.restorecommerce.types.FloatWithUnit width = 16;
+  io.restorecommerce.types.FloatWithUnit height = 17;
 }
 
 message Deleted {
