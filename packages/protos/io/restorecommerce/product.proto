@@ -70,6 +70,7 @@ message Price {
     DOLLAR = 2;
   }
   double price = 1;
+  Currency currency = 2;
 }
 
 message Variant {
