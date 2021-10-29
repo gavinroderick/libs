@@ -93,6 +93,7 @@ message Bundle {
   repeated io.restorecommerce.image.Image image = 5;
   repeated BundleProduct product = 6;
   Price price = 7;
+  repeated string tax_id = 8;
 }
 
 message BundleProduct {
