@@ -95,6 +95,8 @@ message Bundle {
   repeated BundleProduct product = 6;
   Price price = 7;
   repeated string tax_id = 8;
+  string taric_code = 9;
+  string stock_keeping_unit = 10;
 }
 
 message BundleProduct {

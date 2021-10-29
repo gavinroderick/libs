@@ -74,8 +74,8 @@ message Items {
 }
 
 message Item {
-  // below identifier is id of product, variant or bundle
-  string product_variant_bundle_id = 1;
+  // below identifier is id of variant or bundle
+  string variant_bundle_id = 1;
   string product_name = 2;
   string product_description = 3;
   string manufacturer_name = 4;
