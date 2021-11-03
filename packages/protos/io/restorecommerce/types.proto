@@ -2,7 +2,14 @@ syntax = "proto3";
 
 package io.restorecommerce.types;
 
-message FloatWithUnit {
+
+
+message ValueWithUnit {
+  string type; // gr:weight / gr:width
   string unit = 1; // The unit of measurement given using the UN/CEFACT Common Code (3 characters) or a URL
-  double value = 2;
+  oneof Value {
+    int int_value;
+    double double_value;
+    string string_value;
+  }
 }
