@@ -1,9 +1,11 @@
 import { builder } from './builder';
-import { cfg } from './config';
 import logger from './logger';
 import { GrpcClient } from '@restorecommerce/grpc-client';
 import { Transform } from 'stream';
 import { isEmpty } from 'lodash';
+import { createServiceConfig } from '@restorecommerce/service-config';
+
+const cfg = createServiceConfig(process.cwd());
 
 export class EndpointHandler {
   resourceName: any;

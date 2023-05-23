@@ -1,6 +1,7 @@
 import { createLogger } from '@restorecommerce/logger';
-import { cfg } from './config';
+import { createServiceConfig } from '@restorecommerce/service-config';
 
+const cfg = createServiceConfig(process.cwd());
 const loggerCfg = cfg.get('logger');
 
 loggerCfg.esTransformer = (msg: { fields: string; }) => {

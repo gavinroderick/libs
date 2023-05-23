@@ -1,5 +1,7 @@
 import { GrpcClient } from '@restorecommerce/grpc-client';
-import { cfg } from './config';
+import { createServiceConfig } from '@restorecommerce/service-config';
+
+const cfg = createServiceConfig(process.cwd());
 
 interface Microservices {
   conf: any;
