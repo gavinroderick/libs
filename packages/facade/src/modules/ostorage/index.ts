@@ -2,6 +2,7 @@ import { FederatedOstorageSchema } from './gql/federation';
 import { namespace, OstorageConfig, OstorageModule } from "./interfaces";
 import { OstorageSrvGrpcClient } from "./grpc";
 import { createFacadeModuleFactory } from "../../utils";
+import { ObjectDownloadReqHandler } from './objectDownloadReqHandler';
 
 export const ostorageModule = createFacadeModuleFactory<OstorageConfig, OstorageModule>(namespace, (facade, config) => {
   const ostorage = {
@@ -20,4 +21,6 @@ export const ostorageModule = createFacadeModuleFactory<OstorageConfig, Ostorage
     ctx.ostorage = ostorage;
     await next();
   });
+
+  ObjectDownloadReqHandler;
 });
