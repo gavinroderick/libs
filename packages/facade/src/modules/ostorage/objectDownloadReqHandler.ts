@@ -1,4 +1,4 @@
-import * as Router from 'koa-router';
+import Router from 'koa-router';
 import { Logger } from 'winston';
 import { Transform } from 'stream';
 import { isEmpty } from 'lodash';
@@ -39,11 +39,6 @@ export class ObjectDownloadReqHandler {
 
 const cfg = createServiceConfig(process.cwd());
 const loggerCfg = cfg.get('logger');
-
-loggerCfg.esTransformer = (msg: { fields: string; }) => {
-    msg.fields = JSON.stringify(msg.fields);
-    return msg;
-};
 
 let logger = createLogger(loggerCfg);
 
