@@ -1,4 +1,4 @@
-import { GrpcClient } from '@restorecommerce/grpc-client';
+import { OstorageSrvGrpcClient } from "./grpc";
 import { createServiceConfig } from '@restorecommerce/service-config';
 
 const cfg = createServiceConfig(process.cwd());
@@ -33,7 +33,7 @@ export class Builder {
       const serviceName = grpcConfig.proto.services[resource].serviceName;
       const fullServiceName = `${packageName}.${serviceName}`;
       try {
-        const client = new GrpcClient(grpcConfig, this.resourcesConfig.logger);
+        const client = new OstorageSrvGrpcClient(grpcConfig, this.resourcesConfig.logger);
         this.resourcesConfig.microservice.service[fullServiceName] = client[resource];
         this.resourcesConfig.microservice.mapClients.set(resource, fullServiceName);
         this.resourcesConfig.logger.verbose('connected to microservice: ' + fullServiceName);

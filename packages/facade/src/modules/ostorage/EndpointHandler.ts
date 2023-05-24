@@ -1,6 +1,6 @@
 import { builder } from './builder';
 import logger from './logger';
-import { GrpcClient } from '@restorecommerce/grpc-client';
+import { OstorageSrvGrpcClient } from "./grpc";
 import { Transform } from 'stream';
 import { isEmpty } from 'lodash';
 import { createServiceConfig } from '@restorecommerce/service-config';
@@ -47,7 +47,7 @@ export class EndpointHandler {
     let req: any = { bucket, key, download };
     logger.debug('Received download request', { bucket, key });
     const grpcConfig = cfg.get('client:ostorage');
-    const client = new GrpcClient(grpcConfig, logger);
+    const client = new OstorageSrvGrpcClient(grpcConfig, {...grpcConfig,logger});
     const ostorageSrv = client['ostorage'];
     req = { bucket, key, download, subject: ctx.subject };
     let grpcGetStream = await ostorageSrv.get(req);
