@@ -1,4 +1,3 @@
-import { builder } from './builder';
 import logger from './logger';
 import { OstorageSrvGrpcClient } from "./grpc";
 import { Transform } from 'stream';
@@ -12,17 +11,6 @@ export class EndpointHandler {
 
   constructor(resourceName?: any) {
     this.resourceName = resourceName;
-  }
-
-  getResourceService() {
-    // List of services for resources available
-    const options = builder.getMicroservices();
-    const mapValue = options.microservice.mapClients.get(this.resourceName);
-    let resourceService = options.microservice.service[mapValue];
-    if (!resourceService) {
-      resourceService = options.microservice.service[this.resourceName];
-    }
-    return resourceService;
   }
 
   static dlQueryParamExist(ctx: any): boolean {
