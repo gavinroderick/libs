@@ -2,7 +2,7 @@ import { FederatedOstorageSchema } from './gql/federation';
 import { namespace, OstorageConfig, OstorageModule } from "./interfaces";
 import { OstorageSrvGrpcClient } from "./grpc";
 import { createFacadeModuleFactory } from "../../utils";
-import { ObjectDownloadReqHandler } from './objectDownloadReqHandler';
+import { objectDownloadReqHandler } from './objectDownloadReqHandler';
 
 export const ostorageModule = createFacadeModuleFactory<OstorageConfig, OstorageModule>(namespace, (facade, config) => {
   const ostorage = {
@@ -12,7 +12,7 @@ export const ostorageModule = createFacadeModuleFactory<OstorageConfig, Ostorage
     })
   };
 
-  new ObjectDownloadReqHandler(facade.logger, config);
+  objectDownloadReqHandler(facade.logger, config);
 
   facade.addApolloService({
     name: namespace,
