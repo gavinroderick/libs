@@ -12,7 +12,6 @@ export const ostorageModule = createFacadeModuleFactory<OstorageConfig, Ostorage
     })
   };
 
-  console.log("MartinTest333");
   new ObjectDownloadReqHandler(facade.logger, config);
 
   facade.addApolloService({
