@@ -12,6 +12,9 @@ export const ostorageModule = createFacadeModuleFactory<OstorageConfig, Ostorage
     })
   };
 
+  console.log("MartinTest333");
+  new ObjectDownloadReqHandler(facade.logger, config);
+
   facade.addApolloService({
     name: namespace,
     schema: FederatedOstorageSchema(config.config)
@@ -22,5 +25,4 @@ export const ostorageModule = createFacadeModuleFactory<OstorageConfig, Ostorage
     await next();
   });
 
-  ObjectDownloadReqHandler;
 });
