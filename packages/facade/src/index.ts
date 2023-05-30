@@ -26,6 +26,7 @@ import { GraphQLResolverMap, mergeSubscribeIntoSchema } from './gql/protos';
 import compose from 'koa-compose';
 import { KafkaProviderConfig } from '@restorecommerce/kafka-client';
 import { setUseSubscriptions } from './gql/protos/utils';
+import Router from 'koa-router';
 
 export * from './modules/index';
 export * from './middlewares/index';
@@ -290,8 +291,8 @@ export class RestoreCommerceFacade<TModules extends FacadeModuleBase[] = []> imp
 
     await gqlServer.start();
 
-    this.koa.use(cors());
-    this.koa.use(bodyParser());
+    // this.koa.use(cors());
+    // this.koa.use(bodyParser());
     this.koa.use(
       koaMiddleware(gqlServer, {
         context: async ({ ctx }) => ctx,

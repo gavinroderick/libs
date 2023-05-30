@@ -1,32 +1,7 @@
-import Router from 'koa-router';
-import { Logger } from 'winston';
 import { Transform } from 'stream';
 import { isEmpty } from 'lodash';
 import { createServiceConfig } from '@restorecommerce/service-config';
 import { createLogger } from '@restorecommerce/logger';
-
-export const objectDownloadReqHandler = (logger: Logger, cfg: any) => {
-    let idsClient: any;
-    const router = new Router();
-
-    router.get(/^\/storage\/([^/]+)\/(.+)/, async (ctx: any, next: any) => {
-        if ((cfg.get('buckets') || []).indexOf(ctx.params[0]) == -1) {
-            return logger.info('Invalid bucket name');
-        }
-        const authToken = ctx.request.header['authorization'];
-        let token;
-        if (authToken && authToken.startsWith('Bearer ')) {
-            token = authToken.split(' ')[1];
-            const dbSubject = await idsClient.findByToken({ token });
-            ctx.subject = { token, id: dbSubject?.payload?.id };
-            ctx.subject = { token };
-        }
-        const bucket = ctx.params[0];
-        const key = ctx.params[1];
-        await EndpointHandler.handleGetFile(bucket, key, ctx);
-        return ctx.response;
-    });
-}
 
 const cfg = createServiceConfig(process.cwd());
 const loggerCfg = cfg.get('logger');
@@ -55,17 +30,22 @@ export class EndpointHandler {
         return reqURL.searchParams.has('dl');
     }
 
-    static async handleGetFile(bucket: string, key: string, ctx: any): Promise<any> {
+    static async handleGetFile(bucket: string, key: string, ctx: any, client: any): Promise<any> {
         let download = false;
         download = this.dlQueryParamExist(ctx);
         // get the target orgKey from the ostorage meta and set it before making ACS request
         let req: any = { bucket, key, download };
         logger.debug('Received download request', { bucket, key });
-        const grpcConfig = cfg.get('client:ostorage');
-        const client = new grpcConfig(grpcConfig, { ...grpcConfig, logger });
         const ostorageSrv = client['ostorage'];
         req = { bucket, key, download, subject: ctx.subject };
         let grpcGetStream = await ostorageSrv.get(req);
+
+        let response = '';
+        for await (const data of grpcGetStream) {
+            response += data.message;
+        }
+        console.log('Repsonse ', response);
+
         let streamData: any = {
             key: '', object: {}, url: '', options: {}
         };
