@@ -79,7 +79,7 @@ export interface RenderRequest {
 export interface RenderResponse {
   id: string;
   /** error or HTML contents */
-  response: Any[];
+  responses: Any[];
 }
 
 function createBasePayload(): Payload {
@@ -117,34 +117,59 @@ export const Payload = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Payload {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePayload();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.templates = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.data = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.style_url = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.strategy = payload_StrategyFromJSON(reader.int32());
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.options = Any.decode(reader, reader.uint32());
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.content_type = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -207,22 +232,31 @@ export const RenderRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RenderRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRenderRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payloads.push(Payload.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -258,7 +292,7 @@ export const RenderRequest = {
 };
 
 function createBaseRenderResponse(): RenderResponse {
-  return { id: "", response: [] };
+  return { id: "", responses: [] };
 }
 
 export const RenderResponse = {
@@ -266,29 +300,38 @@ export const RenderResponse = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    for (const v of message.response) {
+    for (const v of message.responses) {
       Any.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RenderResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRenderResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
-          message.response.push(Any.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 18) {
+            break;
+          }
+
+          message.responses.push(Any.decode(reader, reader.uint32()));
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -296,17 +339,17 @@ export const RenderResponse = {
   fromJSON(object: any): RenderResponse {
     return {
       id: isSet(object.id) ? String(object.id) : "",
-      response: Array.isArray(object?.response) ? object.response.map((e: any) => Any.fromJSON(e)) : [],
+      responses: Array.isArray(object?.responses) ? object.responses.map((e: any) => Any.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: RenderResponse): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    if (message.response) {
-      obj.response = message.response.map((e) => e ? Any.toJSON(e) : undefined);
+    if (message.responses) {
+      obj.responses = message.responses.map((e) => e ? Any.toJSON(e) : undefined);
     } else {
-      obj.response = [];
+      obj.responses = [];
     }
     return obj;
   },
@@ -318,7 +361,7 @@ export const RenderResponse = {
   fromPartial(object: DeepPartial<RenderResponse>): RenderResponse {
     const message = createBaseRenderResponse();
     message.id = object.id ?? "";
-    message.response = object.response?.map((e) => Any.fromPartial(e)) || [];
+    message.responses = object.responses?.map((e) => Any.fromPartial(e)) || [];
     return message;
   },
 };
@@ -494,7 +537,7 @@ export const protoMetadata: ProtoMetadata = {
         "options": undefined,
         "proto3Optional": false,
       }, {
-        "name": "response",
+        "name": "responses",
         "number": 2,
         "label": 3,
         "type": 11,
@@ -502,7 +545,7 @@ export const protoMetadata: ProtoMetadata = {
         "extendee": "",
         "defaultValue": "",
         "oneofIndex": 0,
-        "jsonName": "response",
+        "jsonName": "responses",
         "options": undefined,
         "proto3Optional": false,
       }],
@@ -576,7 +619,7 @@ export const protoMetadata: ProtoMetadata = {
         "leadingDetachedComments": [],
       }, {
         "path": [4, 2, 2, 1],
-        "span": [32, 2, 44],
+        "span": [32, 2, 45],
         "leadingComments": "",
         "trailingComments": " error or HTML contents\n",
         "leadingDetachedComments": [],
