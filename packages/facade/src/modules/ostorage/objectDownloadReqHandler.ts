@@ -33,19 +33,33 @@ export const handleGetFile = async (bucket: string, key: string, ctx: any, clien
     req = { bucket, key, download, subject: ctx.subject };
     let grpcGetStream = await ostorageSrv.get(req);
 
-    let streamResponse: any;
+    let statusCode: any, statusMessage: any, objectOptions: any, objectLastModified: any, objectBuffer = [], objectKey: any;
     for await (const data of grpcGetStream) {
-      streamResponse += data;
-    }
-    if (streamResponse) {
-      streamResponse = JSON.parse(streamResponse);
+      if(!statusCode) {
+        statusCode =  data?.response?.status?.code;
+      }
+      if (!statusMessage) {
+        statusCode =  data?.response?.status?.message;
+      }
+      if(!objectOptions) {
+        statusCode =  data?.response?.payload?.options;
+      }
+      if(!objectLastModified) {
+        objectLastModified = data?.payload?.meta?.modified;
+      }
+      if (data?.response?.payload?.object) {
+        objectBuffer.push(data?.response?.payload?.object);
+      }
+      if (!objectKey) {
+        objectKey = data?.response?.payload?.key;
+      }
     }
 
-    const setResponseHeaders = (response: any) => {
-      if (response?.response?.payload?.meta?.modified) {
-        ctx.response.set('Last-Modified', new Date(response?.response?.payload?.meta?.modified));
+    const setResponseHeaders = () => {
+      if (objectLastModified) {
+        ctx.response.set('Last-Modified', new Date(objectLastModified));
       }
-      if (!response?.response?.payload?.options) {
+      if (!objectOptions) {
         logger.debug(`Object ${key} from bucket ${bucket} does not have options`);
       } else {
         // set response headers on ctx response received from ostorage-srv
@@ -57,7 +71,7 @@ export const handleGetFile = async (bucket: string, key: string, ctx: any, clien
           length,
           version,
           md5
-        } = response?.response?.payload?.options;
+        } = objectOptions;
         if (encoding) {
           ctx.response.set('Content-Encoding', encoding);
         }
@@ -67,9 +81,8 @@ export const handleGetFile = async (bucket: string, key: string, ctx: any, clien
         if (content_language) {
           ctx.response.set('Content-Language', content_language);
         }
-        const name = response?.response?.payload?.key;
         if (content_disposition) {
-          ctx.response.set('Content-Disposition', `${content_disposition};filename=${name}`);
+          ctx.response.set('Content-Disposition', `${content_disposition};filename=${objectKey}`);
         }
         if (length) {
           ctx.response.set('Content-Length', length);
@@ -84,15 +97,15 @@ export const handleGetFile = async (bucket: string, key: string, ctx: any, clien
     };
 
     // add status
-    if (streamResponse?.response?.status?.code != 200) {
-      logger.error('Error downloading file', { status: streamResponse?.response?.status });
-    } else if (streamResponse?.response?.status?.code === 200) {
+    if (statusCode != 200) {
+      logger.error('Error downloading file', { code: statusCode, message: statusMessage });
+    } else if (statusCode === 200) {
       // assigning the grpcStream object through transform to Koa ctx response
-      setResponseHeaders(streamResponse);
+      setResponseHeaders();
       logger.info(`Successfully downloaded file ${key}`);
     }
-    ctx.response.body = streamResponse?.response?.payload?.object;
-    ctx.response.status = streamResponse?.response?.status?.code ? streamResponse?.response?.status?.code : 500;
+    ctx.response.body = Buffer.concat(objectBuffer);
+    ctx.response.status = statusCode ? statusCode : 500;
     return ctx.response;
   } catch (error) {
     logger.error(`Error downloading file ${key}`, { code: (error as any).code, message: (error as any).message, stack: (error as any).stack });
