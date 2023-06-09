@@ -39,10 +39,10 @@ export const handleGetFile = async (bucket: string, key: string, ctx: any, clien
         statusCode =  data?.response?.status?.code;
       }
       if (!statusMessage) {
-        statusCode =  data?.response?.status?.message;
+        statusMessage =  data?.response?.status?.message;
       }
       if(!objectOptions) {
-        statusCode =  data?.response?.payload?.options;
+        objectOptions =  data?.response?.payload?.options;
       }
       if(!objectLastModified) {
         objectLastModified = data?.payload?.meta?.modified;
